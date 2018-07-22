@@ -1,0 +1,85 @@
+
+<!DOCTYPE HTML>
+{% load static %}
+<html>
+  <head>
+    <meta  charset="utf-8"/>
+    <title>
+      Interactive
+  </title>
+  <link rel="stylesheet" href="{% static 'skeleton.css' %}" >
+  <link rel="stylesheet" href="{% static 'normalize.css' %}" >
+  <script src="{% static 'jquery.min.js' %}"></script>
+  <style>
+  #main{
+    display:flex;
+    flex-direction:column;
+    margin-top:200px;
+      align-items: center;
+      justify-content: center;
+      border-width: 2px;
+      border-color: #000000;
+      border-style: solid;
+      padding:20px;
+      margin-left: 30%;
+      margin-right: 30%;
+      border-radius: 6px;
+      box-shadow: 5px 5px 3px #888888;
+      transition: 0.13s;
+
+
+  }
+  #main:hover{
+    box-shadow: 10px 10px 8px #888888;
+  }
+  #main-div{
+
+  }
+
+  </style>
+</head>
+<body>
+  <div id="main-div" >
+    <form id="main"> {% csrf_token %}
+      <h5 >Login here to see your profile</h5>
+      <label>Email ID : </label>
+      <input type="text" id="email" name="email" placeholder="Enter your Email Address"/>
+      <label>Password : </label>
+      <input type="password" id="password" name="password" placeholder="Your Password" />
+      <button type="button" class="button button-primary" id="submit" style="margin-top:10px;">Submit</button>
+      <input type="reset" value="Reset"/>
+      <p style="color:red;" id="error"> </p>
+    </form>
+</div>
+</body>
+<script type="text/javascript">
+  $(document).ready(function(){
+    console.log("Ready")
+    $("#submit").on("click",function(){
+
+      var email = $("#email").val()
+      var password = $("#password").val()
+      var csrfmiddlewaretoken = $("input[name=csrfmiddlewaretoken]").val()
+      console.log(email,password,csrfmiddlewaretoken)
+      $.post("http://localhost:8000",
+      {
+          email: email,
+          password: password,
+          csrfmiddlewaretoken:csrfmiddlewaretoken
+      },
+      function(data, status){
+          console.log(data)
+          if (data.status === "success"){
+              window.location.href="http://localhost:8000/dashboard"
+          }else{
+              $("#error").html("Error logging in ")
+          }
+
+      });
+    })
+
+
+  })
+
+</script>
+</html>

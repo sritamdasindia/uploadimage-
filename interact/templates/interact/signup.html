@@ -1,0 +1,80 @@
+<!doctype html>
+{% load static %}
+<html>
+<head>
+  <meta charset="utf-8"/>
+
+  <title>
+    Signup
+  </title>
+  <link rel="stylesheet" href="{% static 'skeleton.css' %}" >
+  <link rel="stylesheet" href="{% static 'normalize.css' %}" >
+  <link rel="stylesheet" href="{% static 'interact.css' %}" >
+  <script src="{% static 'jquery.min.js' %}"></script>
+</head>
+<body>
+  <form id="main" style="margin-top:100px;">{% csrf_token %}
+    <h5>Sign up</h5>
+    <input type="text" id="name" placeholder="Name"/>
+    <input type="text" id="email" placeholder="email"/>
+    <input type="file" id="image" />
+    <input type="password" id="password" />
+    <button type="button" id="submit" class="button button-primary" style="margin-top:10px;">Submit</button>
+    <button type="reset" > Reset</button
+  </form>
+
+
+</body>
+<script type="text/javascript">
+  $(document).ready(function(){
+    var image_file;
+
+    $("#image").on("change",prepareUpload);
+
+    function prepareUpload(event){
+      image_file = event.target.files;
+      console.log(image_file)
+    }
+
+
+    $("#submit").on("click",function(){
+
+        var name = $("#name").val()
+        var email = $("#email").val();
+        var password = $("#password").val()
+       event.stopPropagation();
+      event.preventDefault();
+
+      var data = new FormData()
+      // $.each(image_file,function(key,value){
+      //   data.append(key,value);
+      //   console.log(key,value)
+      // });
+      data.append("image",image_file[0]);
+      data.append("name",name);
+      data.append("email",email);
+      data.append("password",password);
+      data.append("csrfmiddlewaretoken",$("input[name=csrfmiddlewaretoken]").val())
+      $.ajax({
+        url:"http://localhost:8000/signup",
+        type:"POST",
+        data:data,
+        cache:false,
+        dataType:'json',
+        processData:false,
+        contentType:false,
+        success:function(data,textStatus,jqXHR){
+          console.log(data)
+        },
+        error:function(jqXHR, textStatus, errorThrown){
+          console.log(errorThrown)
+        }
+
+      })
+
+    })
+  })
+
+</script>
+
+</html>
